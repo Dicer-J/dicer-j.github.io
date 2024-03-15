@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2021/07/26/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
+<h2 id="quick-startttt">Quick Startttt</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p><span class="math display">\[\begin{align}
+a &amp;= b + c \label{eq3} \\
+x &amp;= yz \label{eq4} \\
+l &amp;= m - n \label{eq5}
+\end{align}\]</span></p>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>GitLab部署教程（Ubuntu）</title>
+    <url>/2022/04/11/text/</url>
+    <content><![CDATA[<ol type="1">
+<li><p>你需要一台服务器，可以各大服务商处嫖一个也可以买；配置最好2G运存，不然挺卡的。</p></li>
+<li><p>使用SSH登录服务器（使用 Ubuntu 镜像创建的实例默认禁用 root 用户名通过密码的方式登录实例。如需开启，请参考 <a href="https://cloud.tencent.com/document/product/1207/44569#ubuntu-.E7.B3.BB.E7.BB.9F.E5.A6.82.E4.BD.95.E4.BD.BF.E7.94.A8-root-.E7.94.A8.E6.88.B7.E7.99.BB.E5.BD.95.E5.AE.9E.E4.BE.8B.EF.BC.9F">Ubuntu系统如何使用root用户登录实例</a>？）。</p></li>
+</ol>
+<span id="more"></span>
+<ol start="3" type="1">
+<li>前期准备： 测试测试？？？？？？？？？？？</li>
+</ol>
+<blockquote>
+<p>sudo apt-get update</p>
+<p>sudo apt-get install -y curl openssh-server ca-certificates</p>
+<p>sudo apt-get install -y postfix</p>
+<p>使用左右键和回车键选择确定、取消，弹出列表选项的时候，选择 Internet Site</p>
+<p>接着信任 GitLab 的 GPG 公钥：</p>
+<p>curl https://packages.gitlab.com/gpg.key 2&gt; /dev/null | sudo apt-key add - &amp;&gt;/dev/null</p>
+</blockquote>
+<p>配置镜像路径</p>
+<blockquote>
+<p>由于国外的下载速度过慢，所以配置清华大学镜像的路径：</p>
+<p><a href="https://mirror.tuna.tsinghua.edu.cn/help/gitlab-ce/" class="uri">https://mirror.tuna.tsinghua.edu.cn/help/gitlab-ce/</a></p>
+<p>vi /etc/apt/sources.list.d/gitlab-ce.list</p>
+<p>写入：（Ubuntu 18.04 LTS）</p>
+<p>deb https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/ubuntu bionic main</p>
+</blockquote>
+<ol start="4" type="1">
+<li>安装配置gitlab-ce并汉化</li>
+</ol>
+<blockquote>
+<p>sudo apt-get update</p>
+<p>wget <a href="https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/ubuntu/pool/xenial/main/g/gitlab-ce/gitlab-ce_12.3.5-ce.0_amd64.deb" class="uri">https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/ubuntu/pool/xenial/main/g/gitlab-ce/gitlab-ce_12.3.5-ce.0_amd64.deb</a></p>
+<p>dpkg -i gitlab-ce_12.3.5-ce.0_amd64.deb</p>
+<p>vim /etc/gitlab/gitlab.rb</p>
+<p>external_url修改为你的ip或域名</p>
+<p>：wq保存退出</p>
+<p>补丁方式汉化：（注意：汉化之前是必须设置 root 密码登录过的，否则有些必须文件没有生成，汉化不成功。但是我第一次配置失败后再次patch又行了）</p>
+<p>git clone <a href="https://gitee.com/dicer/gitlab.git" class="uri">https://gitee.com/dicer/gitlab.git</a></p>
+<p>cd gitlab</p>
+<p>gitlab_version=$(sudo cat /opt/gitlab/embedded/service/gitlab-rails/VERSION)</p>
+<p>cd ..</p>
+</blockquote>
+<p>patch -d /opt/gitlab/embedded/service/gitlab-rails -p1 &lt; ${gitlab_version}-zh.diff</p>
+<p>（报错就一直按住回车，因为有新文件加入）</p>
+<blockquote>
+<p>因为垃圾服务器，要<a href="https://blog.csdn.net/weixin_41846313/article/details/85199364">设置swap交换分区</a>，不然不行（可以用free -h查看）：</p>
+<p>sudo fallocate -l 2G /swapfile（创建文件）</p>
+<p>sudo chmod 600 /swapfile（设置权限使该文件只能由root访问）</p>
+<p>sudo mkswap /swapfile（将文件标记为swap空间）</p>
+<p>sudo swapon /swapfile（启用swap文件）</p>
+<p>永久化swap文件：</p>
+<p>sudo cp /etc/fstab /etc/fstab.bak</p>
+<p>echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab</p>
+<p>调整Swappiness参数：</p>
+<p>sudo sysctl vm.swappiness=10</p>
+</blockquote>
+<ol start="5" type="1">
+<li>登录网页配置</li>
+</ol>
+<blockquote>
+<p>参考网页：https://xkcoding.com/2018/01/03/devops-gitlab.html</p>
+</blockquote>
+]]></content>
+  </entry>
+</search>
